@@ -105,6 +105,16 @@ void convertToHex(int input){
     }
 }
 
+void convertToBCD(int input){
+    int initializeValue;
+
+    initializeValue = (input / 10) + 1;
+
+    char arr[4 * initializeValue];
+
+    
+}
+
 int main(){
 
 
