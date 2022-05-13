@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -106,13 +108,25 @@ void convertToHex(int input){
 }
 
 void convertToBCD(int input){
-    int initializeValue;
-
-    initializeValue = (input / 10) + 1;
-
-    char arr[4 * initializeValue];
-
+    if (input > 0){
     
+    vector<bitset<4> > vect;
+    while (input > 0){
+        vect.push_back(bitset<4>(input % 10));
+        input = input / 10;
+    }
+    reverse(vect.begin(), vect.end());
+
+    cout << "BCD ";
+
+    for (i = 0; i < vect.size(); i++){
+        cout << vect.at(i) << " ";
+    }
+    cout << endl;
+
+
+
+    } 
 }
 
 int main(){
@@ -128,10 +142,12 @@ while (userInput != -1){
 
     convertToBinary(userInput);
     convertToHex(userInput);
+    convertToBCD(userInput);
 
     cout << endl;
 
 }
+
 return 0;
 
 
