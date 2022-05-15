@@ -1,16 +1,20 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
+
 
 using namespace std;
 
-int i, userInput;
+int i, j, k, userInput;
+
+ofstream outFile;
+
 
 void convertToBinary(int input){
+    
     char arr[8];
 
     
-    if (input <= 255 && input >= 0){
+    
         for (i = 0; i < 8; i++){
             if (input % 2 == 1){
                 arr[7-i] = '1';
@@ -20,27 +24,19 @@ void convertToBinary(int input){
             }
             input = input / 2;
         }
-        cout << "Binary: ";
         for (i = 0; i < 8; i++){
-            cout << arr[i];
+            outFile << arr[i];
         }
-    }
-    else if (input == -1){
-        cout << "Quitting...";
-    }
-    else if (input < 0) {
-        cout << "ERROR: Number too small";
-    }
-    else {
-        cout << "ERROR: Number too large";
-    }
-    cout << endl;
+    outFile << "   ";
+    
 }
 
 void convertToHex(int input){
     char arr[2];
 
-    if (input >= 0 && input <= 255){
+    
+
+    
         for (i = 1; i < 3; i++){
             switch(input % 16) {
                 case 0:
@@ -98,55 +94,103 @@ void convertToHex(int input){
             input = input / 16;
         }
 
-        cout << "Hexadecimal: ";
+        
         for (i = 0; i < 2; i++){
-            cout << arr[i];
+            outFile << arr[i];
         }
-        cout << endl;
+        outFile << "            ";
 
+        
+        
+
+    
+}
+
+void convertNumToBCD(int input){
+    char arr[4];
+
+    
+    for (i = 0; i < 4; i++){
+        if (input % 2 == 1){
+            arr[3-i] = '1';
+        }
+        else {
+            arr[3-i] = '0';
+        }
+        input = input / 2;
     }
+    for (i = 0; i < 4; i++){
+        outFile << arr[i];
+    }
+    
+    
 }
 
 void convertToBCD(int input){
-    if (input > 0){
+    int initVal = 0;
+    int newInput = input;
+    int divisor = 1;
+    int currNum;
     
-    vector<bitset<4> > vect;
-    while (input > 0){
-        vect.push_back(bitset<4>(input % 10));
-        input = input / 10;
+    while (input / divisor != 0){
+        initVal += 1;
+        divisor *= 10;
     }
-    reverse(vect.begin(), vect.end());
 
-    cout << "BCD ";
+    divisor /= 10;
 
-    for (i = 0; i < vect.size(); i++){
-        cout << vect.at(i) << " ";
-    }
-    cout << endl;
+    
 
+    for (k = 0; k < initVal; k++){
+        currNum = newInput / divisor;
+        newInput = newInput % divisor;
+        convertNumToBCD(currNum);
+
+        
+        outFile << " ";
+        
+
+        divisor /= 10;
 
 
     } 
+
 }
 
 int main(){
 
+outFile.open("output.txt");
 
+outFile << "Decimal   Binary     Hexadecimal   BCD   " << endl;    
 
-while (userInput != -1){
+for (j=1; j < 256; j++){
 
-    cout << "Enter a number to convert to binary and hexadecimal; or -1 to quit: ";
+    
+    
+    if(!outFile.is_open()){
+        cout << "ERROR";
+        break;
+    }
+    if (j < 10) {
+        outFile << j << "         ";
+    }
+    else if (j < 100){
+        outFile << j << "        ";
+    }
+    else {
+        outFile << j << "       ";
+    }
+    
+    convertToBinary(j);
+    convertToHex(j);
+    convertToBCD(j);
 
-    cin >> userInput;
-
-
-    convertToBinary(userInput);
-    convertToHex(userInput);
-    convertToBCD(userInput);
-
-    cout << endl;
-
+    
+    outFile << endl;
+    
 }
+
+outFile.close();
 
 return 0;
 
